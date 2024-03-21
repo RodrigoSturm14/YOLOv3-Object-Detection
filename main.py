@@ -1,5 +1,6 @@
 import os
 import cv2
+import numpy as np
 from util import get_outputs
 
 # define constants
@@ -26,6 +27,21 @@ blop_img = cv2.dnn.blobFromImage(img, 1 / 255, (320, 320), (0, 0, 0), False)
 net.setInput(blop_img) # input the blop image into the neural network
 detections = get_outputs(net)
 
+# create and save boundingbox, classid(name of the object detected), confidence(score) of every detection
+# from yolov3
+bboxes = []
+class_ids = []
+scores = []
+
 for detection in detections:
-  print(detection)
-  break
+  bbox = detection[:4]
+  bbox_score = detection[4]
+  class_id = np.argmax(detection[5:]) # save the INDEX of the heigher detection
+  score = np.amax(detection[5:]) # save the VALUE of the heigher detection
+  # append all the collected data to the global lists
+  bboxes.append(bbox)
+  class_ids.append(class_id)
+  scores.append(score)
+
+print(len(bboxes))
+
