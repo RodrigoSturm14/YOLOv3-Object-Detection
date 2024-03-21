@@ -61,6 +61,6 @@ def draw(bbox, img):
   img = cv2.rectangle(img,
                       (xc - int(w / 2), yc - int(h / 2)),
                       (xc + int(w / 2), yc + int(h / 2)),
-                      (0, 255, 0), 20)
+                      (255, 0, 0), 10)
 
   return img
