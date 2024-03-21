@@ -1,7 +1,7 @@
 import os
 import cv2
 import numpy as np
-from util import get_outputs
+from util import get_outputs, draw
 
 # define constants
 model_cfg_path = os.path.join('.', 'model', 'cfg', 'yolov3.cfg')
@@ -20,6 +20,8 @@ net = cv2.dnn.readNetFromDarknet(model_cfg_path, model_weights_path)
 # load image
 img = cv2.imread(img_path)
 
+H, W, _ = img.shape
+
 # convert image for the Deep Neural Network(dnn)
 blop_img = cv2.dnn.blobFromImage(img, 1 / 255, (320, 320), (0, 0, 0), False)
 
@@ -35,6 +37,10 @@ scores = []
 
 for detection in detections:
   bbox = detection[:4]
+  # converting float coordenates into integers
+  xc, yc, w, h = bbox # (xc, yc) center of the bbox
+  bbox = [int(xc * W), int(yc * H), int(w * W), int(h * H)]
+
   bbox_score = detection[4]
   class_id = np.argmax(detection[5:]) # save the INDEX of the heigher detection
   score = np.amax(detection[5:]) # save the VALUE of the heigher detection
@@ -42,6 +48,11 @@ for detection in detections:
   bboxes.append(bbox)
   class_ids.append(class_id)
   scores.append(score)
+  
+# plotting the imgage with the results 
+for bbox in bboxes:
+  img = draw(bbox, img)
 
-print(len(bboxes))
+cv2.imshow('img', img)
+cv2.waitKey(0)
 
