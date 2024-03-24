@@ -8,6 +8,7 @@
 
 * [Description](#description)
 * [Demo and overview](#demo-and-overview)
+* [Improvement areas](#improvement-areas)
   * [To-Do list](#to-do-list)
 * [Notes](#notes)
 
