@@ -8,6 +8,7 @@
 
 * [Description](#description)
 * [Demo and overview](#demo-and-overview)
+  * [To-Do list](#to-do-list)
 * [Notes](#notes)
 
 # Description
@@ -31,6 +32,11 @@ When applying NMS (non maxima suppresion), the overlapping and unnecessary detec
 
 >[!NOTE]
 > However, the goal is to track both person and sports ball classes even though they are overlapped, and eliminate the unnecessary detections for both objects.
+
+# Improvement areas
+### To-Do list
+- [ ] Improve the NMS. Currently the NMS function applied delete every overlapping bbox, when it should be deleting just the unnecesary detections for each object and be able to track two overlapped object.
+- [ ] Apply a fine tune. The next goal is to detect and track just speciifc objects that are meant to be tracked, by applying a fine tune to the pre-trained model.
 
 # Notes
 This repo is currently active and it will be updated with the lastest upgrades.
