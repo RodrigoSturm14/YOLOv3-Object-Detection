@@ -23,7 +23,7 @@ colors = np.random.uniform(0, 255, size=(len(class_names), 3))
 
 # load and resize image
 img = cv2.imread(img_path)
-img = cv2.resize(img, None, 0.4, 0,4)
+img = cv2.resize(img, None, fx=0.4, fy=0.4)
 H, W, channels = img.shape
 
 # convert image for the Deep Neural Network(dnn)
@@ -36,23 +36,24 @@ detections = net.forward(output_layers)
 # create and save boundingbox, classid(name of the object detected), confidence(score) of every detection
 # from yolov3
 bboxes = []
-class_ids = []
 scores = []
+class_ids = []
 
 for detection in detections:
-  bbox = detection[:4]
-  # converting float coordenates into integers
-  xc, yc, w, h = bbox # (xc, yc) center of the bbox
-  bbox = [int(xc * W), int(yc * H), int(w * W), int(h * H)]
-
-  bbox_score = detection[4]
-  class_id = np.argmax(detection[5:]) # save the INDEX of the heigher detection; the index count of detection[5:] will start at 0, not at 5, so if the first detection is a person, it will be saved a 0, which is the index from 'detection[5:]'
-  score = np.amax(detection[5:]) # save the VALUE of the heigher detection
-
-  # append all the collected data to the general lists
-  bboxes.append(bbox)
-  class_ids.append(class_id)
-  scores.append(score)
+  for output in detection:
+    confs = output[5:]
+    class_id = np.argmax(confs)
+    conf = confs[class_id]
+    if conf > 0.3:
+      center_x = int(output[0] * W)
+      center_y = int(output[1] * H)
+      w = int(output[2] * W)
+      h = int(output[3] * H)
+      x = int(center_x - (w/2))
+      y = int(center_y - (h/2))
+      # append all the collected data to the general lists
+      bboxes.append([x, y, w, h])
+      scores.append(float(confs))
 
 # aply NMS; subtract the unnecessary detections for the same object
 bboxes, class_ids, scores = NMS(bboxes, class_ids, scores)
