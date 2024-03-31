@@ -23,7 +23,7 @@ colors = np.random.uniform(0, 255, size=(len(class_names), 3))
 
 # load and resize image
 img = cv2.imread(img_path)
-img = cv2.resize(img, None, fx=0.4, fy=0.4)
+# img = cv2.resize(img, None, fx=0.4, fy=0.4)
 H, W, channels = img.shape
 
 # convert image for the Deep Neural Network(dnn)
@@ -44,7 +44,7 @@ for detection in detections:
     confs = output[5:]
     class_id = np.argmax(confs)
     conf = confs[class_id]
-    if conf > 0.3:
+    if conf > 0.6:
       center_x = int(output[0] * W)
       center_y = int(output[1] * H)
       w = int(output[2] * W)
@@ -53,28 +53,22 @@ for detection in detections:
       y = int(center_y - (h/2))
       # append all the collected data to the general lists
       bboxes.append([x, y, w, h])
-      scores.append(float(confs))
+      scores.append(float(conf))
+      class_ids.append(class_id)
 
 # aply NMS; subtract the unnecessary detections for the same object
-bboxes, class_ids, scores = NMS(bboxes, class_ids, scores)
-
+indexes = cv2.dnn.NMSBoxes(bboxes=bboxes, scores=scores, score_threshold=0.5, nms_threshold=0.4)
+print(indexes)
 # plot the image with bbox and name object
-for bbox_, bbox in enumerate(bboxes):
-  name_position = class_ids[bbox_]
-  name = class_names[name_position]
-  print(name)
+font = cv2.FONT_HERSHEY_PLAIN
+for i in range(len(bboxes)):
+  if i in indexes:
+    x, y, w, h = bboxes[i]
+    label = str(class_names[class_ids[i]])
+    color = colors[i]
+    cv2.rectangle(img, (x, y), (x + w, y + h), color, 2)
+    cv2.putText(img, label, (x, y - 8), font, 1, color, 1)
 
-  xc, yc, w, h = bbox
-
-  img = cv2.rectangle(img, 
-                      (int(xc - (w / 2)),  (int(yc - (h / 2)))), 
-                      (int(xc + (w / 2)),  (int(yc + (h / 2)))), 
-                      (255, 0, 0), 3)
-  
-  img = cv2.putText(img, '{}'.format(name),  
-                    (int(xc - (w / 2)),  int(yc - (h / 2)) - 15), 
-                    cv2.FONT_HERSHEY_SIMPLEX, 
-                    0.7, (58, 193, 242), 2)
 
 # plotting the imgage with the results
 # for bbox_, bbox in enumerate(bboxes):
