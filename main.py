@@ -20,17 +20,18 @@ net = cv2.dnn.readNet(model_cfg_path, model_weights_path)
 layer_names = net.getLayerNames()
 output_layers = [ layer_names[i - 1] for i in net.getUnconnectedOutLayers() ] # get output layers names
 colors = np.random.uniform(0, 255, size=(len(class_names), 3))
-# load image
-img = cv2.imread(img_path)
 
-H, W, _ = img.shape
+# load and resize image
+img = cv2.imread(img_path)
+img = cv2.resize(img, None, 0.4, 0,4)
+H, W, channels = img.shape
 
 # convert image for the Deep Neural Network(dnn)
-blop_img = cv2.dnn.blobFromImage(img, 1 / 255, (320, 320), (0, 0, 0), False)
+blop_img = cv2.dnn.blobFromImage(img, scalefactor=1/255, size=(320, 320), mean=(0, 0, 0), swapRB=True, crop=False)
 
 # get detections
 net.setInput(blop_img) # input the blop image into the neural network
-detections = get_outputs(net)
+detections = net.forward(output_layers)
 
 # create and save boundingbox, classid(name of the object detected), confidence(score) of every detection
 # from yolov3
