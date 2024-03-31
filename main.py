@@ -8,15 +8,18 @@ model_cfg_path = os.path.join('.', 'model', 'cfg', 'yolov3.cfg')
 model_weights_path = os.path.join('.', 'model', 'weights', 'yolov3.weights')
 class_names_path = os.path.join('.', 'model', 'class.names')
 
-img_path =  os.path.join('.', 'assets', 'messi_ball_2.jpg')
+img_path =  os.path.join('.', 'assets', 'messi_ball.jpg')
 
 # open class.names, read each line and save it into list class_names
+class_names = []
 with open(class_names_path, 'r') as file:
-  class_names = [ j[:-1] for j in file.readlines() if len(j) > 2 ]
+  class_names = [ line.strip() for line in file.readlines() ]
 
 # load model
-net = cv2.dnn.readNetFromDarknet(model_cfg_path, model_weights_path)
-
+net = cv2.dnn.readNet(model_cfg_path, model_weights_path)
+layer_names = net.getLayerNames()
+output_layers = [ layer_names[i - 1] for i in net.getUnconnectedOutLayers() ] # get output layers names
+colors = np.random.uniform(0, 255, size=(len(class_names), 3))
 # load image
 img = cv2.imread(img_path)
 
