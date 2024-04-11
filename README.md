@@ -35,9 +35,13 @@ Futhermore this system is able to track and detect several objects of the same c
 |         :---:            |          :---:         |
 | <img src="https://github.com/RodrigoSturm14/YOLOv3-Object-Detection/assets/105557226/70685d59-cf10-4758-8686-aeca83d05332" width="500"/> | <img src="https://github.com/RodrigoSturm14/YOLOv3-Object-Detection/assets/105557226/3c06d8aa-1a4d-45fe-ae37-06ad22b03e4a" width="500"/> |
 
+> [!NOTE]
+> _The system can also use the same principles to detect objects but on videos. However, the pre-trained model takes quite a while to output every frame. The speed detection will depend how powerfull the CPU is._
+
 # Improvement areas
 ### To-Do list
 - [x] ~Improve the NMS. At the moment, the NMS function applied delete every overlapping bbox, when it should be deleting just the unnecesary detections for each object and be able to track two overlapped object.~
+- [x] ~Implement the pre-trained model to a video.~
 - [ ] Apply a fine tune. The next goal is to track only a specific object class that are meant to be tracked and avoid tracking and detecting other class objects by applying a fine tune to the pre-trained model.
 
 # Notes
